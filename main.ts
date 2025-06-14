@@ -5,9 +5,10 @@ import { context, getOctokit } from "npm:@actions/github";
 import semver from "npm:semver";
 import { exec } from "npm:@actions/exec";
 import mime from "npm:mime-types";
-import { expandGlob } from "https://deno.land/std@0.181.0/fs/mod.ts";
 import { Buffer } from "node:buffer";
 import * as process from "node:process";
+import {readFileSync} from "fs";
+import {expandGlob, isFile, path} from "./fs-glob.ts";
 
 // === ТОП-LEVEL ===
 const main = async () => {
@@ -284,8 +285,11 @@ async function getAISummary(
 async function getAssetPaths(patterns: string[]): Promise<string[]> {
   const result: string[] = [];
   for (const pat of patterns) {
-    for await (const e of expandGlob(pat)) {
-      if (e.isFile) result.push(e.path);
+    for await (const file of expandGlob(pat)) {
+      if (await isFile(file)) {
+        console.log('✓', path.relative(process.cwd(), file));
+        result.push(path.relative(process.cwd(), file));
+      }
     }
   }
   return result;
@@ -298,7 +302,7 @@ async function uploadAssets(
   paths: string[],
 ) {
   for (const path of paths) {
-    const data = await Deno.readFile(path);
+    const data = readFileSync(path);
     const name = path.split("/").pop()!;
     const contentType = mime.lookup(name) || "application/octet-stream";
     await octokit.rest.repos.uploadReleaseAsset({

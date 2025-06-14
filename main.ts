@@ -10,10 +10,10 @@ import { Buffer } from "node:buffer";
 import * as process from "node:process";
 
 // === ТОП-LEVEL ===
-async function main() {
+const main = async() => {
   // Входные параметры
   const GITHUB_TOKEN = getInput("GITHUB_TOKEN", { required: true });
-  const BUILD_COMMAND = getInput("BUILD_COMMAND") || "deno task build";
+  const BUILD_COMMAND = getInput("BUILD_COMMAND");
   const ASSET_PATTERNS = getInput("ASSET_PATTERNS", { required: true })
     .split(/\s+/)
     .filter(Boolean);
@@ -65,8 +65,10 @@ async function main() {
 
   // 5. Запускаем тесты, линтинг и сборку
   await runTestsAndLint();
-  info(`Выполняем сборку: ${BUILD_COMMAND}`);
-  await runCommand(BUILD_COMMAND);
+  if (BUILD_COMMAND) {
+    info(`Выполняем сборку: ${BUILD_COMMAND}`);
+    await runCommand(BUILD_COMMAND);
+  }
 
   // 6. Генерим changelog (список + ИИ-резюме)
   const changelog = await generateChangelog(
@@ -88,8 +90,10 @@ async function main() {
   });
 
   // 8. Загружаем артефакты
-  const assetPaths = await getAssetPaths(ASSET_PATTERNS);
-  await uploadAssets(octokit, release.data.upload_url, assetPaths);
+  if (ASSET_PATTERNS.length) {
+    const assetPaths = await getAssetPaths(ASSET_PATTERNS);
+    await uploadAssets(octokit, release.data.upload_url, assetPaths);
+  }
 
   // 9. Уведомляем в Discord (если указан webhook)
   if (DISCORD_WEBHOOK) {

@@ -1,1 +1,49 @@
+name: "Auto Release"
+description: "GitHub Action на Deno для автоматизации релиза по коммитам"
+author: "Ваше Имя или Организация"
 
+inputs:
+  GITHUB_TOKEN:
+    description: "GitHub token to interact with the repository"
+    required: true
+  BUILD_COMMAND:
+    description: "Команда сборки проекта"
+    required: false
+    # default: "deno task build"
+  ASSET_PATTERNS:
+    description: "Glob-шаблоны файлов-артефактов для загрузки"
+    required: false
+  OPENAI_API_KEY:
+    description: "API-ключ OpenAI для генерации сводки"
+    required: false
+  OPENAI_API_MODEL:
+    description: "Модель OpenAI для генерации сводки"
+    required: false
+    default: "gpt-4"
+  OPENAI_API_BASE_URL:
+    description: "Endpoint для OpenAI-based AI."
+    required: false
+    default: "https://api.openai.com/v1/chat/completions"
+  ALLOWED_BRANCH:
+    description: "Ветка, из которой разрешены релизы"
+    required: false
+    default: "main"
+  DRAFT_RELEASE:
+    description: "Создавать ли черновой релиз"
+    required: false
+    default: "false"
+  PRERELEASE:
+    description: "Создавать ли пререлиз"
+    required: false
+    default: "false"
+  DISCORD_WEBHOOK:
+    description: "URL Discord webhook для уведомлений"
+    required: false
+
+runs:
+  using: "node20"
+  main: "dist/out.js"
+
+branding:
+  icon: "package"
+  color: "blue"

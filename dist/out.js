@@ -35522,7 +35522,8 @@ ${bullets}
   });
   const t = await resp.text();
   (0, import_core.info)(t);
-  const j = JSON.stringify(t);
+  (0, import_core.info)(`${baseUrl}/chat/completions`.replace(/\/+$/, "/"));
+  const j = JSON.parse(t);
   return j.choices?.[0]?.message?.content?.trim() || "";
 }
 async function getAssetPaths(patterns) {

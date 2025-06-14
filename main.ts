@@ -54,16 +54,20 @@ const main = async () => {
   // 3. Формируем новую версию и создаём git-тег
   const newTag = bumpVersion(lastTag, releaseType);
   info(`Новый тег: ${newTag}`);
+  info('1');
   await octokit.rest.git.createRef({
     owner,
     repo,
     ref: `refs/tags/${newTag}`,
     sha,
   });
+  info('2');
 
   // 4. Читаем коммиты с прошлого тега и валидируем по Conventional Commits
   const commits = await getCommitsSince(octokit, owner, repo, lastTag, sha);
+  info('3');
   validateCommitMessages(commits);
+  info('4');
 
   // 5. Запускаем тесты, линтинг и сборку
   if (LINT_AND_TESTS_COMMAND) {
@@ -74,6 +78,7 @@ const main = async () => {
     info(`Выполняем сборку: ${BUILD_COMMAND}`);
     await runCommand(BUILD_COMMAND);
   }
+  info('5');
 
   // 6. Генерим changelog (список + ИИ-резюме)
   const changelog = await generateChangelog(
@@ -82,6 +87,7 @@ const main = async () => {
     OPENAI_API_MODEL,
     OPENAI_API_BASE_URL,
   );
+  info('6');
 
   // 7. Опции релиза: draft/prerelease по флагам
   const release = await octokit.rest.repos.createRelease({
@@ -93,12 +99,14 @@ const main = async () => {
     draft: DRAFT_RELEASE,
     prerelease: PRERELEASE,
   });
+  info('7');
 
   // 8. Загружаем артефакты
   if (ASSET_PATTERNS.length) {
     const assetPaths = await getAssetPaths(ASSET_PATTERNS);
     await uploadAssets(octokit, release.data.upload_url, assetPaths);
   }
+  info('8');
 
   // 9. Уведомляем в Discord (если указан webhook)
   if (DISCORD_WEBHOOK) {
@@ -107,6 +115,7 @@ const main = async () => {
       `:tada: Выпущен релиз ${newTag} в ${owner}/${repo}`,
     );
   }
+  info('9');
 
   info("Релиз успешно создан");
 };

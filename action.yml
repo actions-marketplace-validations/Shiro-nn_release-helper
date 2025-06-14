@@ -1,4 +1,4 @@
-name: "Release Helper"
+name: "Auto Release /w AI Summary"
 description: "GitHub Action на Deno для автоматизации релиза по коммитам"
 author: "Shiro-nn"
 

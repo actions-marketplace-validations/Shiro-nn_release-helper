@@ -264,7 +264,7 @@ async function getAISummary(
   model: string,
   baseUrl: string,
 ): Promise<string> {
-  const resp = await fetch(`${baseUrl}/chat/completions`.replace(/\/+$/, "/"), {
+  const resp = await fetch((`${baseUrl}/chat/completions`).replace(/\/+$/, "/"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -288,7 +288,7 @@ async function getAISummary(
   });
   const t = await resp.text();
   info(t);
-  info(`${baseUrl}/chat/completions`.replace(/\/+$/, "/"));
+  info((`${baseUrl}/chat/completions`).replace(/\/+$/, "/"))
   const j = JSON.parse(t);
   return j.choices?.[0]?.message?.content?.trim() || "";
 }

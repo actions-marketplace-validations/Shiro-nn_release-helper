@@ -239,7 +239,7 @@ async function generateChangelog(
   commits: Array<{ sha: string; commit: any; author?: any }>,
   apiKey?: string,
   model = "gpt-4",
-  baseUrl = "https://api.openai.com/v1/chat/completions",
+  baseUrl = "https://api.openai.com/v1/",
 ): Promise<string> {
   const lines = commits.map((c) => {
     const title = c.commit.message.split("\n")[0];
@@ -264,7 +264,7 @@ async function getAISummary(
   model: string,
   baseUrl: string,
 ): Promise<string> {
-  const resp = await fetch(baseUrl, {
+  const resp = await fetch(`${baseUrl}/chat/completions`.replace(/\/+$/, "/"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

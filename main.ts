@@ -264,31 +264,34 @@ async function getAISummary(
   model: string,
   baseUrl: string,
 ): Promise<string> {
-  const resp = await fetch((`${baseUrl}/chat/completions`).replace(/\/+$/, "/"), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
+  const resp = await fetch(
+    (`${baseUrl}/chat/completions`).replace(/\/+$/, "/"),
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          {
+            role: "system",
+            content:
+              "Ты — помощник, который на основе списка изменений генерирует 2–3 предложения.",
+          },
+          {
+            role: "user",
+            content:
+              `Вот список изменений:\n${bullets}\n\nСделай короткое резюме.`,
+          },
+        ],
+      }),
     },
-    body: JSON.stringify({
-      model,
-      messages: [
-        {
-          role: "system",
-          content:
-            "Ты — помощник, который на основе списка изменений генерирует 2–3 предложения.",
-        },
-        {
-          role: "user",
-          content:
-            `Вот список изменений:\n${bullets}\n\nСделай короткое резюме.`,
-        },
-      ],
-    }),
-  });
+  );
   const t = await resp.text();
   info(t);
-  info((`${baseUrl}/chat/completions`).replace(/\/+$/, "/"))
+  info((`${baseUrl}/chat/completions`).replace(/\/+$/, "/"));
   const j = JSON.parse(t);
   return j.choices?.[0]?.message?.content?.trim() || "";
 }

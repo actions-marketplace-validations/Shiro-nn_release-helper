@@ -35497,29 +35497,32 @@ async function generateChangelog(commits, apiKey, model = "gpt-4", baseUrl = "ht
 ${lines}`;
 }
 async function getAISummary(bullets, apiKey, model, baseUrl) {
-  const resp = await fetch(`${baseUrl}/chat/completions`.replace(/\/+$/, "/"), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
-      model,
-      messages: [
-        {
-          role: "system",
-          content: "\u0422\u044B \u2014 \u043F\u043E\u043C\u043E\u0449\u043D\u0438\u043A, \u043A\u043E\u0442\u043E\u0440\u044B\u0439 \u043D\u0430 \u043E\u0441\u043D\u043E\u0432\u0435 \u0441\u043F\u0438\u0441\u043A\u0430 \u0438\u0437\u043C\u0435\u043D\u0435\u043D\u0438\u0439 \u0433\u0435\u043D\u0435\u0440\u0438\u0440\u0443\u0435\u0442 2\u20133 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u044F."
-        },
-        {
-          role: "user",
-          content: `\u0412\u043E\u0442 \u0441\u043F\u0438\u0441\u043E\u043A \u0438\u0437\u043C\u0435\u043D\u0435\u043D\u0438\u0439:
+  const resp = await fetch(
+    `${baseUrl}/chat/completions`.replace(/\/+$/, "/"),
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          {
+            role: "system",
+            content: "\u0422\u044B \u2014 \u043F\u043E\u043C\u043E\u0449\u043D\u0438\u043A, \u043A\u043E\u0442\u043E\u0440\u044B\u0439 \u043D\u0430 \u043E\u0441\u043D\u043E\u0432\u0435 \u0441\u043F\u0438\u0441\u043A\u0430 \u0438\u0437\u043C\u0435\u043D\u0435\u043D\u0438\u0439 \u0433\u0435\u043D\u0435\u0440\u0438\u0440\u0443\u0435\u0442 2\u20133 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u044F."
+          },
+          {
+            role: "user",
+            content: `\u0412\u043E\u0442 \u0441\u043F\u0438\u0441\u043E\u043A \u0438\u0437\u043C\u0435\u043D\u0435\u043D\u0438\u0439:
 ${bullets}
 
 \u0421\u0434\u0435\u043B\u0430\u0439 \u043A\u043E\u0440\u043E\u0442\u043A\u043E\u0435 \u0440\u0435\u0437\u044E\u043C\u0435.`
-        }
-      ]
-    })
-  });
+          }
+        ]
+      })
+    }
+  );
   const t = await resp.text();
   (0, import_core.info)(t);
   (0, import_core.info)(`${baseUrl}/chat/completions`.replace(/\/+$/, "/"));

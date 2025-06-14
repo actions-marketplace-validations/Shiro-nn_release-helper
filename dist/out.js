@@ -35351,14 +35351,18 @@ var main = async () => {
   (0, import_core.info)(`\u041F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0439 \u0442\u0435\u0433: ${lastTag ?? "\u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D"}`);
   const newTag = bumpVersion(lastTag, releaseType);
   (0, import_core.info)(`\u041D\u043E\u0432\u044B\u0439 \u0442\u0435\u0433: ${newTag}`);
+  (0, import_core.info)("1");
   await octokit.rest.git.createRef({
     owner,
     repo,
     ref: `refs/tags/${newTag}`,
     sha
   });
+  (0, import_core.info)("2");
   const commits = await getCommitsSince(octokit, owner, repo, lastTag, sha);
+  (0, import_core.info)("3");
   validateCommitMessages(commits);
+  (0, import_core.info)("4");
   if (LINT_AND_TESTS_COMMAND) {
     (0, import_core.info)(`\u0412\u044B\u043F\u043E\u043B\u043D\u044F\u0435\u043C lint && test: ${LINT_AND_TESTS_COMMAND}`);
     await runCommand(LINT_AND_TESTS_COMMAND);
@@ -35367,12 +35371,14 @@ var main = async () => {
     (0, import_core.info)(`\u0412\u044B\u043F\u043E\u043B\u043D\u044F\u0435\u043C \u0441\u0431\u043E\u0440\u043A\u0443: ${BUILD_COMMAND}`);
     await runCommand(BUILD_COMMAND);
   }
+  (0, import_core.info)("5");
   const changelog = await generateChangelog(
     commits,
     OPENAI_API_KEY,
     OPENAI_API_MODEL,
     OPENAI_API_BASE_URL
   );
+  (0, import_core.info)("6");
   const release = await octokit.rest.repos.createRelease({
     owner,
     repo,
@@ -35382,16 +35388,19 @@ var main = async () => {
     draft: DRAFT_RELEASE,
     prerelease: PRERELEASE
   });
+  (0, import_core.info)("7");
   if (ASSET_PATTERNS.length) {
     const assetPaths = await getAssetPaths(ASSET_PATTERNS);
     await uploadAssets(octokit, release.data.upload_url, assetPaths);
   }
+  (0, import_core.info)("8");
   if (DISCORD_WEBHOOK) {
     await notifyDiscord(
       DISCORD_WEBHOOK,
       `:tada: \u0412\u044B\u043F\u0443\u0449\u0435\u043D \u0440\u0435\u043B\u0438\u0437 ${newTag} \u0432 ${owner}/${repo}`
     );
   }
+  (0, import_core.info)("9");
   (0, import_core.info)("\u0420\u0435\u043B\u0438\u0437 \u0443\u0441\u043F\u0435\u0448\u043D\u043E \u0441\u043E\u0437\u0434\u0430\u043D");
 };
 main().catch((err) => (0, import_core.setFailed)(err.message));

@@ -11,16 +11,16 @@
  * @module
  */
 
-import { promises as fs } from 'node:fs';
-import * as path from 'node:path';
+import { promises as fs } from "node:fs";
+import * as path from "node:path";
 
 /* ------------------------------------------------------------------ *
  * Types
  * ------------------------------------------------------------------ */
 
 export interface ExpandGlobOptions {
-    /** Base directory for traversal (defaults → `process.cwd()`) */
-    cwd?: string;
+  /** Base directory for traversal (defaults → `process.cwd()`) */
+  cwd?: string;
 }
 
 /* ------------------------------------------------------------------ *
@@ -33,14 +33,16 @@ export interface ExpandGlobOptions {
  *  - `*`  → `[^/]*`
  */
 function globToRegExp(glob: string): RegExp {
-    const special = /[.+^${}()|[\]\\]/g;          // escape RegExp specials
-    return new RegExp('^' +
-        glob.replace(/\\/g, '/')                    // win → POSIX slashes
-            .replace(special, '\\$&')
-            .replace(/\*\*/g, '§§')                 // tmp marker for **
-            .replace(/\*/g, '[^/]*')                // *  (1-level)
-            .replace(/§§/g, '.*')                   // ** (∞-levels)
-        + '$');
+  const special = /[.+^${}()|[\]\\]/g; // escape RegExp specials
+  return new RegExp(
+    "^" +
+      glob.replace(/\\/g, "/") // win → POSIX slashes
+        .replace(special, "\\$&")
+        .replace(/\*\*/g, "§§") // tmp marker for **
+        .replace(/\*/g, "[^/]*") // *  (1-level)
+        .replace(/§§/g, ".*") + // ** (∞-levels)
+      "$",
+  );
 }
 
 /* ------------------------------------------------------------------ *
@@ -52,9 +54,9 @@ function globToRegExp(glob: string): RegExp {
  *
  * ```ts
  * for await (const p of expandGlob('src/.../.ts')) {
-*   console.log(p);
-* }
-* ```
+ *   console.log(p);
+ * }
+ * ```
  *
  * Pattern is treated relative to `opts.cwd` (default `process.cwd()`).
  */
@@ -62,18 +64,18 @@ export async function* expandGlob(
   pattern: string,
   opts: ExpandGlobOptions = {},
 ): AsyncGenerator<string> {
-  const cwd   = opts.cwd ?? process.cwd();
-  const rex   = globToRegExp(pattern);
+  const cwd = opts.cwd ?? process.cwd();
+  const rex = globToRegExp(pattern);
   const stack: string[] = [cwd];
 
   while (stack.length) {
     const dir = stack.pop() as string;
     for (const ent of await fs.readdir(dir, { withFileTypes: true })) {
       const full = path.join(dir, ent.name);
-      const rel  = path.relative(cwd, full).split(path.sep).join('/'); // POSIX
+      const rel = path.relative(cwd, full).split(path.sep).join("/"); // POSIX
 
       if (ent.isDirectory()) stack.push(full);
-      if (rex.test(rel))     yield full;
+      if (rex.test(rel)) yield full;
     }
   }
 }
@@ -83,7 +85,7 @@ export async function isFile(filepath: string): Promise<boolean> {
   try {
     return (await fs.stat(filepath)).isFile();
   } catch {
-    return false;  // ENOENT, EPERM, ...
+    return false; // ENOENT, EPERM, ...
   }
 }
 

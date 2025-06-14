@@ -7,8 +7,8 @@ import { exec } from "npm:@actions/exec";
 import mime from "npm:mime-types";
 import { Buffer } from "node:buffer";
 import * as process from "node:process";
-import {readFileSync} from "node:fs";
-import {expandGlob, isFile, path} from "./fs-glob.ts";
+import { readFileSync } from "node:fs";
+import { expandGlob, isFile, path } from "./fs-glob.ts";
 
 // === ТОП-LEVEL ===
 const main = async () => {
@@ -287,7 +287,7 @@ async function getAssetPaths(patterns: string[]): Promise<string[]> {
   for (const pat of patterns) {
     for await (const file of expandGlob(pat)) {
       if (await isFile(file)) {
-        console.log('✓', path.relative(process.cwd(), file));
+        console.log("✓", path.relative(process.cwd(), file));
         result.push(path.relative(process.cwd(), file));
       }
     }

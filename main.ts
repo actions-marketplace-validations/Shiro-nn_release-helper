@@ -288,7 +288,8 @@ async function getAISummary(
   });
   const t = await resp.text();
   info(t);
-  const j = JSON.stringify(t);
+  info(`${baseUrl}/chat/completions`.replace(/\/+$/, "/"))
+  const j = JSON.parse(t);
   return j.choices?.[0]?.message?.content?.trim() || "";
 }
 

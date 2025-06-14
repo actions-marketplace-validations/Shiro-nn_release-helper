@@ -33,8 +33,10 @@ async function main() {
   const commitMessage = context.payload.head_commit?.message || "";
   const releaseType = parseReleaseType(commitMessage);
   if (!releaseType) {
+    if (commitMessage.includes("!release")) {
+      throw new Error("В сообщении коммита не найдена команда релиза (!release: major/minor/patch или !breaking)");
+    }
     process.exit(0);
-    // throw new Error("В сообщении коммита не найдена команда релиза (!release: major/minor/patch или !breaking)");
   }
 
   // 1. Проверяем чистоту рабочего дерева и ветку

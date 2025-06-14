@@ -34,7 +34,9 @@ async function main() {
   const releaseType = parseReleaseType(commitMessage);
   if (!releaseType) {
     if (commitMessage.includes("!release")) {
-      throw new Error("В сообщении коммита не найдена команда релиза (!release: major/minor/patch или !breaking)");
+      throw new Error(
+        "В сообщении коммита не найдена команда релиза (!release: major/minor/patch или !breaking)",
+      );
     }
     process.exit(0);
   }

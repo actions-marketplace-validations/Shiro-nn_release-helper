@@ -36897,6 +36897,11 @@ async function main() {
   const commitMessage = import_github.context.payload.head_commit?.message || "";
   const releaseType = parseReleaseType(commitMessage);
   if (!releaseType) {
+    if (commitMessage.includes("!release")) {
+      throw new Error(
+        "\u0412 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0438 \u043A\u043E\u043C\u043C\u0438\u0442\u0430 \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u0430 \u043A\u043E\u043C\u0430\u043D\u0434\u0430 \u0440\u0435\u043B\u0438\u0437\u0430 (!release: major/minor/patch \u0438\u043B\u0438 !breaking)"
+      );
+    }
     process2.exit(0);
   }
   await assertCleanWorkingDir();

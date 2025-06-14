@@ -36882,6 +36882,7 @@ var EXISTS_ERROR = new Deno.errors.AlreadyExists("dest already exists.");
 var process2 = __toESM(require("node:process"));
 var main = async () => {
   const GITHUB_TOKEN = (0, import_core.getInput)("GITHUB_TOKEN", { required: true });
+  const LINT_AND_TESTS_COMMAND = (0, import_core.getInput)("LINT_AND_TESTS_COMMAND");
   const BUILD_COMMAND = (0, import_core.getInput)("BUILD_COMMAND");
   const ASSET_PATTERNS = (0, import_core.getInput)("ASSET_PATTERNS", { required: true }).split(/\s+/).filter(Boolean);
   const OPENAI_API_KEY = (0, import_core.getInput)("OPENAI_API_KEY");
@@ -36918,7 +36919,10 @@ var main = async () => {
   });
   const commits = await getCommitsSince(octokit, owner, repo, lastTag, sha);
   validateCommitMessages(commits);
-  await runTestsAndLint();
+  if (LINT_AND_TESTS_COMMAND) {
+    (0, import_core.info)(`\u0412\u044B\u043F\u043E\u043B\u043D\u044F\u0435\u043C lint && test: ${LINT_AND_TESTS_COMMAND}`);
+    await runCommand(LINT_AND_TESTS_COMMAND);
+  }
   if (BUILD_COMMAND) {
     (0, import_core.info)(`\u0412\u044B\u043F\u043E\u043B\u043D\u044F\u0435\u043C \u0441\u0431\u043E\u0440\u043A\u0443: ${BUILD_COMMAND}`);
     await runCommand(BUILD_COMMAND);
@@ -36973,10 +36977,6 @@ async function assertOnBranch(expected) {
       `\u0420\u0435\u043B\u0438\u0437\u044B \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043D\u044B \u0442\u043E\u043B\u044C\u043A\u043E \u0438\u0437 \u0432\u0435\u0442\u043A\u0438 '${expected}', \u0442\u0435\u043A\u0443\u0449\u0430\u044F \u0432\u0435\u0442\u043A\u0430 '${branch}'`
     );
   }
-}
-async function runTestsAndLint() {
-  await runCommand("deno lint");
-  await runCommand("deno test");
 }
 async function runCommand(command) {
   const [cmd, ...args] = command.split(/\s+/);

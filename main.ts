@@ -13,6 +13,7 @@ import * as process from "node:process";
 const main = async () => {
   // Входные параметры
   const GITHUB_TOKEN = getInput("GITHUB_TOKEN", { required: true });
+  const LINT_AND_TESTS_COMMAND = getInput("LINT_AND_TESTS_COMMAND");
   const BUILD_COMMAND = getInput("BUILD_COMMAND");
   const ASSET_PATTERNS = getInput("ASSET_PATTERNS", { required: true })
     .split(/\s+/)
@@ -64,7 +65,10 @@ const main = async () => {
   validateCommitMessages(commits);
 
   // 5. Запускаем тесты, линтинг и сборку
-  await runTestsAndLint();
+  if (LINT_AND_TESTS_COMMAND) {
+    info(`Выполняем lint && test: ${LINT_AND_TESTS_COMMAND}`);
+    await runCommand(LINT_AND_TESTS_COMMAND);
+  }
   if (BUILD_COMMAND) {
     info(`Выполняем сборку: ${BUILD_COMMAND}`);
     await runCommand(BUILD_COMMAND);
@@ -135,12 +139,6 @@ async function assertOnBranch(expected: string) {
       `Релизы разрешены только из ветки '${expected}', текущая ветка '${branch}'`,
     );
   }
-}
-
-// Запуск тестов и линтинга
-async function runTestsAndLint() {
-  await runCommand("deno lint");
-  await runCommand("deno test");
 }
 
 // Утилита для выполнения команд

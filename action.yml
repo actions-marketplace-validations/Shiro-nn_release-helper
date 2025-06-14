@@ -1,11 +1,15 @@
 name: "Auto Release"
 description: "GitHub Action на Deno для автоматизации релиза по коммитам"
-author: "Ваше Имя или Организация"
+author: "Shiro-nn"
 
 inputs:
   GITHUB_TOKEN:
     description: "GitHub token to interact with the repository"
     required: true
+  LINT_AND_TESTS_COMMAND:
+    description: "Команда для lint и test"
+    required: false
+    # default: "deno lint && deno test"
   BUILD_COMMAND:
     description: "Команда сборки проекта"
     required: false

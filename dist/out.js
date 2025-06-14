@@ -35324,7 +35324,7 @@ var main = async () => {
   const GITHUB_TOKEN = (0, import_core.getInput)("GITHUB_TOKEN", { required: true });
   const LINT_AND_TESTS_COMMAND = (0, import_core.getInput)("LINT_AND_TESTS_COMMAND");
   const BUILD_COMMAND = (0, import_core.getInput)("BUILD_COMMAND");
-  const ASSET_PATTERNS = (0, import_core.getInput)("ASSET_PATTERNS", { required: true }).split(/\s+/).filter(Boolean);
+  const ASSET_PATTERNS = ((0, import_core.getInput)("ASSET_PATTERNS") ?? "").split(/\s+/).filter(Boolean);
   const OPENAI_API_KEY = (0, import_core.getInput)("OPENAI_API_KEY");
   const OPENAI_API_MODEL = (0, import_core.getInput)("OPENAI_API_MODEL") || "gpt-4";
   const OPENAI_API_BASE_URL = (0, import_core.getInput)("OPENAI_API_BASE_URL");

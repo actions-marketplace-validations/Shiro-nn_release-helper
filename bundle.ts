@@ -4,16 +4,16 @@ import { denoPlugins } from "jsr:@luca/esbuild-deno-loader@^0.11.1";
 await esbuild.initialize();
 
 await esbuild.build({
-    entryPoints: ["main.ts"],
-    bundle: true,
-    format: "cjs",
-    platform: "node",
-    plugins: [
-        ...denoPlugins({
-            loader: "native",
-        }),
-    ],
-    outfile: "dist/out.js",
+  entryPoints: ["main.ts"],
+  bundle: true,
+  format: "cjs",
+  platform: "node",
+  plugins: [
+    ...denoPlugins({
+      loader: "native",
+    }),
+  ],
+  outfile: "dist/out.js",
 });
 
 esbuild.stop();

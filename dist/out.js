@@ -35498,7 +35498,7 @@ ${lines}`;
 }
 async function getAISummary(bullets, apiKey, model, baseUrl) {
   const resp = await fetch(
-    `${baseUrl}/chat/completions`.replace(/\/+$/, "/"),
+    `${baseUrl}/chat/completions`.replace(/\/+/g, "/"),
     {
       method: "POST",
       headers: {
@@ -35525,7 +35525,7 @@ ${bullets}
   );
   const t = await resp.text();
   (0, import_core.info)(t);
-  (0, import_core.info)(`${baseUrl}/chat/completions`.replace(/\/+$/, "/"));
+  (0, import_core.info)(`${baseUrl}/chat/completions`.replace(/\/+/g, "/"));
   const j = JSON.parse(t);
   return j.choices?.[0]?.message?.content?.trim() || "";
 }

@@ -1,6 +1,6 @@
 // main.ts — GitHub Action на Deno для автоматического релиза по коммитам
 
-import { getInput, info, setFailed } from "npm:@actions/core";
+import { getInput, info, setFailed, warning } from "npm:@actions/core";
 import { context, getOctokit } from "npm:@actions/github";
 import semver from "npm:semver";
 import { exec } from "npm:@actions/exec";
@@ -54,20 +54,16 @@ const main = async () => {
   // 3. Формируем новую версию и создаём git-тег
   const newTag = bumpVersion(lastTag, releaseType);
   info(`Новый тег: ${newTag}`);
-  info("1");
   await octokit.rest.git.createRef({
     owner,
     repo,
     ref: `refs/tags/${newTag}`,
     sha,
   });
-  info("2");
 
   // 4. Читаем коммиты с прошлого тега и валидируем по Conventional Commits
   const commits = await getCommitsSince(octokit, owner, repo, lastTag, sha);
-  info("3");
   validateCommitMessages(commits);
-  info("4");
 
   // 5. Запускаем тесты, линтинг и сборку
   if (LINT_AND_TESTS_COMMAND) {
@@ -78,7 +74,6 @@ const main = async () => {
     info(`Выполняем сборку: ${BUILD_COMMAND}`);
     await runCommand(BUILD_COMMAND);
   }
-  info("5");
 
   // 6. Генерим changelog (список + ИИ-резюме)
   const changelog = await generateChangelog(
@@ -87,7 +82,6 @@ const main = async () => {
     OPENAI_API_MODEL,
     OPENAI_API_BASE_URL,
   );
-  info("6");
 
   // 7. Опции релиза: draft/prerelease по флагам
   const release = await octokit.rest.repos.createRelease({
@@ -99,14 +93,12 @@ const main = async () => {
     draft: DRAFT_RELEASE,
     prerelease: PRERELEASE,
   });
-  info("7");
 
   // 8. Загружаем артефакты
   if (ASSET_PATTERNS.length) {
     const assetPaths = await getAssetPaths(ASSET_PATTERNS);
     await uploadAssets(octokit, release.data.upload_url, assetPaths);
   }
-  info("8");
 
   // 9. Уведомляем в Discord (если указан webhook)
   if (DISCORD_WEBHOOK) {
@@ -115,7 +107,6 @@ const main = async () => {
       `:tada: Выпущен релиз ${newTag} в ${owner}/${repo}`,
     );
   }
-  info("9");
 
   info("Релиз успешно создан");
 };
@@ -289,11 +280,13 @@ async function getAISummary(
       }),
     },
   );
-  const t = await resp.text();
-  info(t);
-  info(`${baseUrl}/chat/completions`.replace(/\/+/g, "/"));
-  const j = JSON.parse(t);
-  return j.choices?.[0]?.message?.content?.trim() || "";
+  try {
+    const j = await resp.json();
+    return stripThinkBlocks(j.choices?.[0]?.message?.content?.trim() || "");
+  } catch (err: any) {
+    warning(err);
+    return "";
+  }
 }
 
 // Получение списка артефактов по glob-шаблонам
@@ -333,6 +326,12 @@ async function uploadAssets(
   }
 }
 
+function stripThinkBlocks(input: string): string {
+  // Для удаления <think>…</think>
+  return input.replace(/<think>[\s\S]*?<\/think>/gs, "").trim();
+}
+
+/*
 // Удаление тега по имени
 async function deleteTag(
   octokit: ReturnType<typeof getOctokit>,
@@ -356,6 +355,7 @@ async function deleteRelease(
     release_id: releaseId,
   });
 }
+*/
 
 // Уведомление в Discord через Webhook
 async function notifyDiscord(webhookUrl: string, message: string) {

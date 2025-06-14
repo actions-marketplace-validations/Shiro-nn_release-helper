@@ -30,7 +30,7 @@ Auto Release — это **GitHub Action** на **Deno**, который:
 
 ```yaml
 - name: Auto Release 🚀
-  uses: <owner>/<repo>@v1
+  uses: Shiro-nn/release-helper@v1
   with:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     # Сборка проекта

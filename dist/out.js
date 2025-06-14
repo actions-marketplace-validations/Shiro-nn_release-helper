@@ -35394,7 +35394,7 @@ var main = async () => {
   }
   (0, import_core.info)("\u0420\u0435\u043B\u0438\u0437 \u0443\u0441\u043F\u0435\u0448\u043D\u043E \u0441\u043E\u0437\u0434\u0430\u043D");
 };
-main.catch((err) => (0, import_core.setFailed)(err.message));
+main().catch((err) => (0, import_core.setFailed)(err.message));
 async function assertCleanWorkingDir() {
   let output = "";
   await (0, import_exec.exec)("git", ["status", "--porcelain"], {

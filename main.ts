@@ -10,86 +10,84 @@ import {Buffer} from "node:buffer";
 import * as process from "node:process";
 
 // === ТОП-LEVEL ===
-if (import.meta.main) {
-    try {
-        // Входные параметры
-        const GITHUB_TOKEN = getInput("GITHUB_TOKEN", { required: true });
-        const BUILD_COMMAND = getInput("BUILD_COMMAND") || "deno task build";
-        const ASSET_PATTERNS = getInput("ASSET_PATTERNS", { required: true })
-            .split(/\s+/)
-            .filter(Boolean);
-        const OPENAI_API_KEY = getInput("OPENAI_API_KEY");
-        const OPENAI_API_MODEL = getInput("OPENAI_API_MODEL") || "gpt-4";
-        const OPENAI_API_BASE_URL = getInput("OPENAI_API_BASE_URL");
-        const DISCORD_WEBHOOK = getInput("DISCORD_WEBHOOK");           // для уведомлений в Slack
-        const ALLOWED_BRANCH = getInput("ALLOWED_BRANCH") || "main"; // ветка для релизов
-        const DRAFT_RELEASE = getInput("DRAFT_RELEASE") === "true";  // черновой релиз?
-        const PRERELEASE = getInput("PRERELEASE") === "true";        // пререлиз?
+async function main() {
+    // Входные параметры
+    const GITHUB_TOKEN = getInput("GITHUB_TOKEN", {required: true});
+    const BUILD_COMMAND = getInput("BUILD_COMMAND") || "deno task build";
+    const ASSET_PATTERNS = getInput("ASSET_PATTERNS", {required: true})
+        .split(/\s+/)
+        .filter(Boolean);
+    const OPENAI_API_KEY = getInput("OPENAI_API_KEY");
+    const OPENAI_API_MODEL = getInput("OPENAI_API_MODEL") || "gpt-4";
+    const OPENAI_API_BASE_URL = getInput("OPENAI_API_BASE_URL");
+    const DISCORD_WEBHOOK = getInput("DISCORD_WEBHOOK");           // для уведомлений в Slack
+    const ALLOWED_BRANCH = getInput("ALLOWED_BRANCH") || "main"; // ветка для релизов
+    const DRAFT_RELEASE = getInput("DRAFT_RELEASE") === "true";  // черновой релиз?
+    const PRERELEASE = getInput("PRERELEASE") === "true";        // пререлиз?
 
-        const octokit = getOctokit(GITHUB_TOKEN);
-        const { owner, repo } = context.repo;
-        const sha = context.sha;
+    const octokit = getOctokit(GITHUB_TOKEN);
+    const {owner, repo} = context.repo;
+    const sha = context.sha;
 
-        // 0. Парсим команду релиза в сообщении коммита
-        const commitMessage = context.payload.head_commit?.message || "";
-        const releaseType = parseReleaseType(commitMessage);
-        if (!releaseType) {
-            process.exit(0);
-            // throw new Error("В сообщении коммита не найдена команда релиза (!release: major/minor/patch или !breaking)");
-        }
-
-        // 1. Проверяем чистоту рабочего дерева и ветку
-        await assertCleanWorkingDir();
-        await assertOnBranch(ALLOWED_BRANCH);
-
-        // 2. Получаем последний релизный тег
-        const lastTag = await getLastReleaseTag(octokit, owner, repo);
-        info(`Последний тег: ${lastTag ?? "не найден"}`);
-
-        // 3. Формируем новую версию и создаём git-тег
-        const newTag = bumpVersion(lastTag, releaseType);
-        info(`Новый тег: ${newTag}`);
-        await octokit.rest.git.createRef({ owner, repo, ref: `refs/tags/${newTag}`, sha });
-
-        // 4. Читаем коммиты с прошлого тега и валидируем по Conventional Commits
-        const commits = await getCommitsSince(octokit, owner, repo, lastTag, sha);
-        validateCommitMessages(commits);
-
-        // 5. Запускаем тесты, линтинг и сборку
-        await runTestsAndLint();
-        info(`Выполняем сборку: ${BUILD_COMMAND}`);
-        await runCommand(BUILD_COMMAND);
-
-        // 6. Генерим changelog (список + ИИ-резюме)
-        const changelog = await generateChangelog(
-            commits, OPENAI_API_KEY, OPENAI_API_MODEL, OPENAI_API_BASE_URL
-        );
-
-        // 7. Опции релиза: draft/prerelease по флагам
-        const release = await octokit.rest.repos.createRelease({
-            owner,
-            repo,
-            tag_name: newTag,
-            name: `Release ${newTag}`,
-            body: changelog,
-            draft: DRAFT_RELEASE,
-            prerelease: PRERELEASE,
-        });
-
-        // 8. Загружаем артефакты
-        const assetPaths = await getAssetPaths(ASSET_PATTERNS);
-        await uploadAssets(octokit, release.data.upload_url, assetPaths);
-
-        // 9. Уведомляем в Discord (если указан webhook)
-        if (DISCORD_WEBHOOK) {
-            await notifyDiscord(DISCORD_WEBHOOK, `:tada: Выпущен релиз ${newTag} в ${owner}/${repo}`);
-        }
-
-        info("Релиз успешно создан");
-    } catch (err: any) {
-        setFailed(err.message);
+    // 0. Парсим команду релиза в сообщении коммита
+    const commitMessage = context.payload.head_commit?.message || "";
+    const releaseType = parseReleaseType(commitMessage);
+    if (!releaseType) {
+        process.exit(0);
+        // throw new Error("В сообщении коммита не найдена команда релиза (!release: major/minor/patch или !breaking)");
     }
+
+    // 1. Проверяем чистоту рабочего дерева и ветку
+    await assertCleanWorkingDir();
+    await assertOnBranch(ALLOWED_BRANCH);
+
+    // 2. Получаем последний релизный тег
+    const lastTag = await getLastReleaseTag(octokit, owner, repo);
+    info(`Последний тег: ${lastTag ?? "не найден"}`);
+
+    // 3. Формируем новую версию и создаём git-тег
+    const newTag = bumpVersion(lastTag, releaseType);
+    info(`Новый тег: ${newTag}`);
+    await octokit.rest.git.createRef({owner, repo, ref: `refs/tags/${newTag}`, sha});
+
+    // 4. Читаем коммиты с прошлого тега и валидируем по Conventional Commits
+    const commits = await getCommitsSince(octokit, owner, repo, lastTag, sha);
+    validateCommitMessages(commits);
+
+    // 5. Запускаем тесты, линтинг и сборку
+    await runTestsAndLint();
+    info(`Выполняем сборку: ${BUILD_COMMAND}`);
+    await runCommand(BUILD_COMMAND);
+
+    // 6. Генерим changelog (список + ИИ-резюме)
+    const changelog = await generateChangelog(
+        commits, OPENAI_API_KEY, OPENAI_API_MODEL, OPENAI_API_BASE_URL
+    );
+
+    // 7. Опции релиза: draft/prerelease по флагам
+    const release = await octokit.rest.repos.createRelease({
+        owner,
+        repo,
+        tag_name: newTag,
+        name: `Release ${newTag}`,
+        body: changelog,
+        draft: DRAFT_RELEASE,
+        prerelease: PRERELEASE,
+    });
+
+    // 8. Загружаем артефакты
+    const assetPaths = await getAssetPaths(ASSET_PATTERNS);
+    await uploadAssets(octokit, release.data.upload_url, assetPaths);
+
+    // 9. Уведомляем в Discord (если указан webhook)
+    if (DISCORD_WEBHOOK) {
+        await notifyDiscord(DISCORD_WEBHOOK, `:tada: Выпущен релиз ${newTag} в ${owner}/${repo}`);
+    }
+
+    info("Релиз успешно создан");
 }
+
+main.catch(err => setFailed(err.message));
 
 
 // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===

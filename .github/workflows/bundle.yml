@@ -22,7 +22,7 @@ jobs:
 
       - name: Recreate dist
         shell: bash
-        run: rm -rf ./dist && mkdir -p ./dist
+        run: rm -rf ./dist
 
       - name: Formate
         shell: bash

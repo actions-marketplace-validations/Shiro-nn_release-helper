@@ -10,7 +10,7 @@ import { Buffer } from "node:buffer";
 import * as process from "node:process";
 
 // === ТОП-LEVEL ===
-const main = async() => {
+const main = async () => {
   // Входные параметры
   const GITHUB_TOKEN = getInput("GITHUB_TOKEN", { required: true });
   const BUILD_COMMAND = getInput("BUILD_COMMAND");
@@ -104,7 +104,7 @@ const main = async() => {
   }
 
   info("Релиз успешно создан");
-}
+};
 
 main.catch((err) => setFailed(err.message));
 

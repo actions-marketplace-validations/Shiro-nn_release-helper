@@ -36880,9 +36880,9 @@ var EXISTS_ERROR = new Deno.errors.AlreadyExists("dest already exists.");
 
 // main.ts
 var process2 = __toESM(require("node:process"));
-async function main() {
+var main = async () => {
   const GITHUB_TOKEN = (0, import_core.getInput)("GITHUB_TOKEN", { required: true });
-  const BUILD_COMMAND = (0, import_core.getInput)("BUILD_COMMAND") || "deno task build";
+  const BUILD_COMMAND = (0, import_core.getInput)("BUILD_COMMAND");
   const ASSET_PATTERNS = (0, import_core.getInput)("ASSET_PATTERNS", { required: true }).split(/\s+/).filter(Boolean);
   const OPENAI_API_KEY = (0, import_core.getInput)("OPENAI_API_KEY");
   const OPENAI_API_MODEL = (0, import_core.getInput)("OPENAI_API_MODEL") || "gpt-4";
@@ -36919,8 +36919,10 @@ async function main() {
   const commits = await getCommitsSince(octokit, owner, repo, lastTag, sha);
   validateCommitMessages(commits);
   await runTestsAndLint();
-  (0, import_core.info)(`\u0412\u044B\u043F\u043E\u043B\u043D\u044F\u0435\u043C \u0441\u0431\u043E\u0440\u043A\u0443: ${BUILD_COMMAND}`);
-  await runCommand(BUILD_COMMAND);
+  if (BUILD_COMMAND) {
+    (0, import_core.info)(`\u0412\u044B\u043F\u043E\u043B\u043D\u044F\u0435\u043C \u0441\u0431\u043E\u0440\u043A\u0443: ${BUILD_COMMAND}`);
+    await runCommand(BUILD_COMMAND);
+  }
   const changelog = await generateChangelog(
     commits,
     OPENAI_API_KEY,
@@ -36936,8 +36938,10 @@ async function main() {
     draft: DRAFT_RELEASE,
     prerelease: PRERELEASE
   });
-  const assetPaths = await getAssetPaths(ASSET_PATTERNS);
-  await uploadAssets(octokit, release.data.upload_url, assetPaths);
+  if (ASSET_PATTERNS.length) {
+    const assetPaths = await getAssetPaths(ASSET_PATTERNS);
+    await uploadAssets(octokit, release.data.upload_url, assetPaths);
+  }
   if (DISCORD_WEBHOOK) {
     await notifyDiscord(
       DISCORD_WEBHOOK,
@@ -36945,7 +36949,7 @@ async function main() {
     );
   }
   (0, import_core.info)("\u0420\u0435\u043B\u0438\u0437 \u0443\u0441\u043F\u0435\u0448\u043D\u043E \u0441\u043E\u0437\u0434\u0430\u043D");
-}
+};
 main.catch((err) => (0, import_core.setFailed)(err.message));
 async function assertCleanWorkingDir() {
   let output = "";

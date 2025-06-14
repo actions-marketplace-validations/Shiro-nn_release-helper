@@ -1,4 +1,4 @@
-name: "Auto Release"
+name: "AutoRelease"
 description: "GitHub Action на Deno для автоматизации релиза по коммитам"
 author: "Shiro-nn"
 

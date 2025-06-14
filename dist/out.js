@@ -35481,7 +35481,7 @@ function validateCommitMessages(commits) {
 ${msgs}`);
   }
 }
-async function generateChangelog(commits, apiKey, model = "gpt-4", baseUrl = "https://api.openai.com/v1/chat/completions") {
+async function generateChangelog(commits, apiKey, model = "gpt-4", baseUrl = "https://api.openai.com/v1/") {
   const lines = commits.map((c) => {
     const title = c.commit.message.split("\n")[0];
     const short = c.sha.slice(0, 7);
@@ -35497,7 +35497,7 @@ async function generateChangelog(commits, apiKey, model = "gpt-4", baseUrl = "ht
 ${lines}`;
 }
 async function getAISummary(bullets, apiKey, model, baseUrl) {
-  const resp = await fetch(baseUrl, {
+  const resp = await fetch(`${baseUrl}/chat/completions`.replace(/\/+$/, "/"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

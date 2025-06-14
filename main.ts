@@ -111,7 +111,7 @@ const main = async () => {
   info("Релиз успешно создан");
 };
 
-main.catch((err) => setFailed(err.message));
+main().catch((err) => setFailed(err.message));
 
 // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
 

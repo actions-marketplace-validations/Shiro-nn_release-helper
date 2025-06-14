@@ -7,7 +7,7 @@ import { exec } from "npm:@actions/exec";
 import mime from "npm:mime-types";
 import { Buffer } from "node:buffer";
 import * as process from "node:process";
-import {readFileSync} from "fs";
+import {readFileSync} from "node:fs";
 import {expandGlob, isFile, path} from "./fs-glob.ts";
 
 // === ТОП-LEVEL ===

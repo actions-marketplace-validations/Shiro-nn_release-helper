@@ -16,7 +16,7 @@ const main = async () => {
   const GITHUB_TOKEN = getInput("GITHUB_TOKEN", { required: true });
   const LINT_AND_TESTS_COMMAND = getInput("LINT_AND_TESTS_COMMAND");
   const BUILD_COMMAND = getInput("BUILD_COMMAND");
-  const ASSET_PATTERNS = getInput("ASSET_PATTERNS", { required: true })
+  const ASSET_PATTERNS = (getInput("ASSET_PATTERNS") ?? "")
     .split(/\s+/)
     .filter(Boolean);
   const OPENAI_API_KEY = getInput("OPENAI_API_KEY");

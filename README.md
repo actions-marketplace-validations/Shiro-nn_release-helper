@@ -4,7 +4,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/deno-%5E1.44-brightgreen?logo=deno&style=for-the-badge" alt="Deno" />
   <img src="https://img.shields.io/github/v/release/Shiro-nn/release-helper?label=latest&style=for-the-badge" alt="Latest Release" />
-  <img src="https://img.shields.io/github/actions/workflow/status/Shiro-nn/release-helper/release.yml?branch=main&style=for-the-badge" alt="CI" />
+  <img src="https://img.shields.io/github/actions/workflow/status/Shiro-nn/release-helper/Build%20bundle?style=for-the-badge" alt="CI" />
 </p>
 
 ---

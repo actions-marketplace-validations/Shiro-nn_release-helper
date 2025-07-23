@@ -19807,9 +19807,9 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
   }
 });
 
-// ../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.1/node_modules/@actions/github/lib/context.js
+// ../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.2/node_modules/@actions/github/lib/context.js
 var require_context = __commonJS({
-  "../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.1/node_modules/@actions/github/lib/context.js"(exports2) {
+  "../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.2/node_modules/@actions/github/lib/context.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.Context = void 0;
@@ -19866,9 +19866,9 @@ var require_context = __commonJS({
   }
 });
 
-// ../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.1/node_modules/@actions/github/lib/internal/utils.js
+// ../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.2/node_modules/@actions/github/lib/internal/utils.js
 var require_utils3 = __commonJS({
-  "../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.1/node_modules/@actions/github/lib/internal/utils.js"(exports2) {
+  "../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.2/node_modules/@actions/github/lib/internal/utils.js"(exports2) {
     "use strict";
     var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -21071,9 +21071,9 @@ var require_dist_node7 = __commonJS({
   }
 });
 
-// ../../../.cache/deno/deno_esbuild/registry.npmjs.org/@octokit/core@5.2.1/node_modules/@octokit/core/dist-node/index.js
+// ../../../.cache/deno/deno_esbuild/registry.npmjs.org/@octokit/core@5.2.2/node_modules/@octokit/core/dist-node/index.js
 var require_dist_node8 = __commonJS({
-  "../../../.cache/deno/deno_esbuild/registry.npmjs.org/@octokit/core@5.2.1/node_modules/@octokit/core/dist-node/index.js"(exports2, module2) {
+  "../../../.cache/deno/deno_esbuild/registry.npmjs.org/@octokit/core@5.2.2/node_modules/@octokit/core/dist-node/index.js"(exports2, module2) {
     "use strict";
     var __defProp2 = Object.defineProperty;
     var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
@@ -21102,11 +21102,26 @@ var require_dist_node8 = __commonJS({
     var import_request = require_dist_node5();
     var import_graphql = require_dist_node6();
     var import_auth_token = require_dist_node7();
-    var VERSION = "5.2.1";
+    var VERSION = "5.2.2";
     var noop = () => {
     };
     var consoleWarn = console.warn.bind(console);
     var consoleError = console.error.bind(console);
+    function createLogger(logger = {}) {
+      if (typeof logger.debug !== "function") {
+        logger.debug = noop;
+      }
+      if (typeof logger.info !== "function") {
+        logger.info = noop;
+      }
+      if (typeof logger.warn !== "function") {
+        logger.warn = consoleWarn;
+      }
+      if (typeof logger.error !== "function") {
+        logger.error = consoleError;
+      }
+      return logger;
+    }
     var userAgentTrail = `octokit-core.js/${VERSION} ${(0, import_universal_user_agent.getUserAgent)()}`;
     var Octokit = class {
       static {
@@ -21180,15 +21195,7 @@ var require_dist_node8 = __commonJS({
         }
         this.request = import_request.request.defaults(requestDefaults);
         this.graphql = (0, import_graphql.withCustomRequest)(this.request).defaults(requestDefaults);
-        this.log = Object.assign(
-          {
-            debug: noop,
-            info: noop,
-            warn: consoleWarn,
-            error: consoleError
-          },
-          options.log
-        );
+        this.log = createLogger(options.log);
         this.hook = hook;
         if (!options.authStrategy) {
           if (!options.auth) {
@@ -21230,9 +21237,9 @@ var require_dist_node8 = __commonJS({
   }
 });
 
-// ../../../.cache/deno/deno_esbuild/registry.npmjs.org/@octokit/plugin-rest-endpoint-methods@10.4.1_@octokit+core@5.2.1/node_modules/@octokit/plugin-rest-endpoint-methods/dist-node/index.js
+// ../../../.cache/deno/deno_esbuild/registry.npmjs.org/@octokit/plugin-rest-endpoint-methods@10.4.1_@octokit+core@5.2.2/node_modules/@octokit/plugin-rest-endpoint-methods/dist-node/index.js
 var require_dist_node9 = __commonJS({
-  "../../../.cache/deno/deno_esbuild/registry.npmjs.org/@octokit/plugin-rest-endpoint-methods@10.4.1_@octokit+core@5.2.1/node_modules/@octokit/plugin-rest-endpoint-methods/dist-node/index.js"(exports2, module2) {
+  "../../../.cache/deno/deno_esbuild/registry.npmjs.org/@octokit/plugin-rest-endpoint-methods@10.4.1_@octokit+core@5.2.2/node_modules/@octokit/plugin-rest-endpoint-methods/dist-node/index.js"(exports2, module2) {
     "use strict";
     var __defProp2 = Object.defineProperty;
     var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
@@ -23386,9 +23393,9 @@ var require_dist_node9 = __commonJS({
   }
 });
 
-// ../../../.cache/deno/deno_esbuild/registry.npmjs.org/@octokit/plugin-paginate-rest@9.2.2_@octokit+core@5.2.1/node_modules/@octokit/plugin-paginate-rest/dist-node/index.js
+// ../../../.cache/deno/deno_esbuild/registry.npmjs.org/@octokit/plugin-paginate-rest@9.2.2_@octokit+core@5.2.2/node_modules/@octokit/plugin-paginate-rest/dist-node/index.js
 var require_dist_node10 = __commonJS({
-  "../../../.cache/deno/deno_esbuild/registry.npmjs.org/@octokit/plugin-paginate-rest@9.2.2_@octokit+core@5.2.1/node_modules/@octokit/plugin-paginate-rest/dist-node/index.js"(exports2, module2) {
+  "../../../.cache/deno/deno_esbuild/registry.npmjs.org/@octokit/plugin-paginate-rest@9.2.2_@octokit+core@5.2.2/node_modules/@octokit/plugin-paginate-rest/dist-node/index.js"(exports2, module2) {
     "use strict";
     var __defProp2 = Object.defineProperty;
     var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
@@ -23765,9 +23772,9 @@ var require_dist_node10 = __commonJS({
   }
 });
 
-// ../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.1/node_modules/@actions/github/lib/utils.js
+// ../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.2/node_modules/@actions/github/lib/utils.js
 var require_utils4 = __commonJS({
-  "../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.1/node_modules/@actions/github/lib/utils.js"(exports2) {
+  "../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.2/node_modules/@actions/github/lib/utils.js"(exports2) {
     "use strict";
     var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -23825,9 +23832,9 @@ var require_utils4 = __commonJS({
   }
 });
 
-// ../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.1/node_modules/@actions/github/lib/github.js
+// ../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.2/node_modules/@actions/github/lib/github.js
 var require_github = __commonJS({
-  "../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.1/node_modules/@actions/github/lib/github.js"(exports2) {
+  "../../../.cache/deno/deno_esbuild/registry.npmjs.org/@actions/github@6.0.1_@octokit+core@5.2.2/node_modules/@actions/github/lib/github.js"(exports2) {
     "use strict";
     var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;

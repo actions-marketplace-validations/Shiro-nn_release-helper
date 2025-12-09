@@ -4,7 +4,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/deno-%5E1.44-brightgreen?logo=deno&style=for-the-badge" alt="Deno" />
   <img src="https://img.shields.io/github/v/release/Shiro-nn/release-helper?label=latest&style=for-the-badge" alt="Latest Release" />
-  <img src="https://img.shields.io/github/actions/workflow/status/Shiro-nn/release-helper/release.yml?branch=main&style=for-the-badge" alt="CI" />
+  <img src="https://img.shields.io/github/actions/workflow/status/Shiro-nn/release-helper/Build%20bundle?style=for-the-badge" alt="CI" />
 </p>
 
 ---
@@ -29,7 +29,7 @@ Auto Release — это **GitHub Action** на **Deno**, который:
 
 ```yaml
 - name: Auto Release 🚀
-  uses: Shiro-nn/release-helper@v1
+  uses: Shiro-nn/release-helper@master
   with:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     # Сборка проекта
@@ -91,7 +91,7 @@ jobs:
         with:
           cache: true
       - name: Auto Release
-        uses: Shiro-nn/release-helper@v1
+        uses: Shiro-nn/release-helper@master
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BUILD_COMMAND: "deno task build"
@@ -150,10 +150,10 @@ jobs:
 
 ## 🔗 Другие полезные Actions
 
-| Action                                                             | Описание                                                                              |
-| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
-| [**AI Commit Fixer**](https://github.com/Shiro-nn/ai-commit-fixer) | 🛠️ Автоматическое исправление сообщений коммитов по Conventional Commits с помощью ИИ |
-| [**AI Code Review**](https://github.com/Shiro-nn/ai-code-review)   | 👀 Автоматическое ревью Pull Requests с рекомендациями от ИИ                          |
+| Action                                                               | Описание                                                                              |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| [**AI Commit Fixer**](https://github.com/Shiro-nn/ai-commit-fixer)   | 🛠️ Автоматическое исправление сообщений коммитов по Conventional Commits с помощью ИИ |
+| [**AI Code Reviewer**](https://github.com/Shiro-nn/ai-code-reviewer) | 👀 Автоматическое ревью Pull Requests с рекомендациями от ИИ                          |
 
 ---
 
